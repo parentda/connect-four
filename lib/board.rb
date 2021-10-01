@@ -1,4 +1,6 @@
 class Board
+  attr_reader :positions
+
   def initialize(height, width)
     @height = height
     @width = width
@@ -11,5 +13,9 @@ class Board
 
   def full?
     @positions.all? { |column| column.length == @height }
+  end
+
+  def update_board(column, marker)
+    @positions[column - 1] << marker
   end
 end
