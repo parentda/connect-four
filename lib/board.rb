@@ -6,6 +6,10 @@ class Board
   end
 
   def valid_move?(column)
-    column.between?(0, @width - 1) && @positions[column - 1].length < @height
+    column.between?(1, @width) && @positions[column - 1].length < @height
+  end
+
+  def full?
+    @positions.all? { |column| column.length == @height }
   end
 end
