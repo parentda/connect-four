@@ -54,7 +54,7 @@ describe Board do
     end
 
     context 'when board is partially full' do
-      it ' returns false' do
+      it 'returns false' do
         set_partial(board)
         expect(board).to_not be_full
       end
@@ -64,6 +64,19 @@ describe Board do
       it 'returns true' do
         set_full(board)
         expect(board).to be_full
+      end
+    end
+  end
+
+  describe '#update_board' do
+    context 'when given a valid column' do
+      it 'adds marker to that column' do
+        column = 3
+        symbol = 'X'
+        expect { board.update_board(column, symbol) }.to change {
+          board.positions[column - 1].length
+        }.by(1)
+        expect(board.positions[column - 1].last).to eq(symbol)
       end
     end
   end
