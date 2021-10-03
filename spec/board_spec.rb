@@ -17,7 +17,7 @@ describe Board do
     )
   end
 
-  subject(:board) { described_class.new(6, 7) }
+  subject(:board) { described_class.new(6, 7, 4) }
 
   describe '#valid_move?' do
     context 'when entering an invalid column' do
@@ -47,7 +47,7 @@ describe Board do
   end
 
   describe '#full?' do
-    context 'when board is new' do
+    context 'when board is empty' do
       it 'returns false' do
         expect(board).to_not be_full
       end
@@ -77,6 +77,109 @@ describe Board do
           board.positions[column - 1].length
         }.by(1)
         expect(board.positions[column - 1].last).to eq(symbol)
+      end
+    end
+  end
+
+  describe '#game_over?' do
+    context 'when board is empty' do
+      it 'is not game over' do
+        expect(board).to_not be_game_over
+      end
+    end
+
+    context 'when board is partially-filled' do
+      it 'is not game over' do
+        board.instance_variable_set(:@previous_move, 3)
+        board.instance_variable_set(
+          :@positions,
+          [
+            %w[X X X],
+            %w[Y Y Y],
+            %w[X X X],
+            %w[Y X Y X],
+            %w[X Y X],
+            %w[Y Y Y],
+            %w[X X X]
+          ]
+        )
+        expect(board).to_not be_game_over
+      end
+    end
+
+    context 'when there is a vertical streak' do
+      it 'is game over' do
+        board.instance_variable_set(:@previous_move, 0)
+        board.instance_variable_set(
+          :@positions,
+          [
+            %w[X X X X],
+            %w[Y Y Y],
+            %w[X X X],
+            %w[Y X Y X],
+            %w[X Y X],
+            %w[Y Y Y],
+            %w[X X X]
+          ]
+        )
+        expect(board).to be_game_over
+      end
+    end
+
+    context 'when there is a horizontal streak' do
+      it 'is game over' do
+        board.instance_variable_set(:@previous_move, 4)
+        board.instance_variable_set(
+          :@positions,
+          [
+            %w[X X X X],
+            %w[Y Y Y],
+            %w[X X X],
+            %w[Y Y X Y],
+            %w[X Y X],
+            %w[Y Y X X],
+            %w[X X X]
+          ]
+        )
+        expect(board).to be_game_over
+      end
+    end
+
+    context 'when there is a diagonal streak' do
+      it 'is game over' do
+        board.instance_variable_set(:@previous_move, 2)
+        board.instance_variable_set(
+          :@positions,
+          [
+            %w[Y X],
+            %w[Y Y Y],
+            %w[X X Y],
+            %w[Y Y X Y],
+            %w[X Y X],
+            %w[Y Y X X],
+            %w[X X X]
+          ]
+        )
+        expect(board).to be_game_over
+      end
+    end
+
+    context 'when there is an anti-diagonal streak' do
+      it 'is game over' do
+        board.instance_variable_set(:@previous_move, 3)
+        board.instance_variable_set(
+          :@positions,
+          [
+            %w[Y X X X],
+            %w[Y Y Y],
+            %w[X X X],
+            %w[Y Y X Y],
+            %w[X Y Y],
+            %w[Y Y X X],
+            %w[Y X X]
+          ]
+        )
+        expect(board).to be_game_over
       end
     end
   end
