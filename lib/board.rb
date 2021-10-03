@@ -1,11 +1,11 @@
 class Board
-  attr_accessor :positions
+  attr_reader :positions
 
   @@directions = {
-    vertical: [1, 0],
-    horizontal: [0, 1],
-    diagonal: [1, 1],
-    anti_diagonal: [1, -1]
+    vertical: [[1, 0], [-1, 0]],
+    horizontal: [[0, 1], [0, -1]],
+    diagonal: [[1, 1], [-1, -1]],
+    anti_diagonal: [[1, -1], [-1, 1]]
   }
 
   def initialize(height, width, streak)
@@ -49,8 +49,6 @@ class Board
   def game_over?
     column = @previous_move
     row = @positions[column].length - 1
-
-    # row = @positions[column].empty? ? 0 : @positions[column].length - 1
     marker = @positions[column][row]
 
     @@directions.each do |_key, direction|
@@ -62,21 +60,16 @@ class Board
   private
 
   def streak_found?(column, row, direction, marker)
-    streak_length(column, row, direction, marker) +
-      streak_length(column, row, direction.map(&:-@), marker) - 1 >= @streak
+    streak_length(column, row, direction[0], marker) +
+      streak_length(column, row, direction[1], marker) - 1 >= @streak
   end
 
-  def streak_length(column, row, direction, marker)
+  def streak_length(column, row, vector, marker)
     unless column.between?(0, @width - 1) && row.between?(0, @height - 1) &&
              @positions[column][row] == marker
       return 0
     end
 
-    streak_length(
-      column + direction[0],
-      row + direction[1],
-      direction,
-      marker
-    ) + 1
+    streak_length(column + vector[0], row + vector[1], vector, marker) + 1
   end
 end
