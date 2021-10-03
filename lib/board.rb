@@ -1,9 +1,18 @@
 class Board
   attr_accessor :positions
 
-  def initialize(height, width)
+  @@directions = {
+    vertical: [1, 0],
+    horizontal: [0, 1],
+    diagonal: [1, 1],
+    anti_diagonal: [1, -1]
+  }
+
+  def initialize(height, width, streak)
     @height = height
     @width = width
+    @streak = streak
+    @previous_move = 0
     @positions = Array.new(width) { [] }
   end
 
@@ -17,6 +26,7 @@ class Board
 
   def update_board(column, marker)
     @positions[column - 1] << marker
+    @previous_move = column - 1
   end
 
   def display
@@ -34,5 +44,39 @@ class Board
 
         #{visualize}
     HEREDOC
+  end
+
+  def game_over?
+    column = @previous_move
+    row = @positions[column].length - 1
+
+    # row = @positions[column].empty? ? 0 : @positions[column].length - 1
+    marker = @positions[column][row]
+
+    @@directions.each do |_key, direction|
+      return true if streak_found?(column, row, direction, marker)
+    end
+    false
+  end
+
+  private
+
+  def streak_found?(column, row, direction, marker)
+    streak_length(column, row, direction, marker) +
+      streak_length(column, row, direction.map(&:-@), marker) - 1 >= @streak
+  end
+
+  def streak_length(column, row, direction, marker)
+    unless column.between?(0, @width - 1) && row.between?(0, @height - 1) &&
+             @positions[column][row] == marker
+      return 0
+    end
+
+    streak_length(
+      column + direction[0],
+      row + direction[1],
+      direction,
+      marker
+    ) + 1
   end
 end
