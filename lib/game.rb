@@ -17,6 +17,11 @@ class Game
     game_end
   end
 
+  def game_setup
+    game_start_prompt
+    @num_players.times { |num| create_player(num) }
+  end
+
   def create_player(number)
     name_prompt(number)
     name = gets.chomp
