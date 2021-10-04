@@ -3,7 +3,7 @@ require_relative 'displayable'
 class Game
   include Displayable
 
-  attr_reader :players, :current_player
+  attr_reader :players, :current_player, :board
 
   def initialize(num_players)
     @num_players = num_players
@@ -39,7 +39,11 @@ class Game
     end
   end
 
-  def player_turn; end
+  def player_turn
+    column = player_input
+    @board.update_board(column - 1, @current_player.marker)
+    @board.display
+  end
 
   def game_loop; end
 end
