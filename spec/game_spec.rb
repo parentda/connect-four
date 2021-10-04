@@ -67,4 +67,23 @@ describe Game do
       end
     end
   end
+
+  describe '#game_setup' do
+    context 'when setting up the game' do
+      before do
+        allow(game).to receive(:name_prompt)
+        allow(game).to receive(:gets).and_return('Name')
+      end
+      it 'sets @current_player' do
+        game.game_setup
+        expect(game.current_player).to_not be nil
+      end
+    end
+  end
+
+  describe '#player_turn' do
+  end
+
+  describe '#game_loop' do
+  end
 end
