@@ -6,27 +6,35 @@ require_relative '../lib/player'
 
 describe Game do
   subject(:game) { described_class.new(2) }
+  before { game.instance_variable_set(:@board, instance_double(Board)) }
+
   describe '#create_player' do
-    context 'when creating a new player' do
-      before do
-        allow(game).to receive(:name_prompt)
-        allow(game).to receive(:gets).and_return('Name')
-      end
+    before do
+      allow(game).to receive(:name_prompt)
+      allow(game).to receive(:gets).and_return('Name')
+    end
 
-      it 'sends a call to Player class' do
-        expect(Player).to receive(:new).once
-        game.create_player(1)
-      end
+    it 'sends a call to Player class' do
+      expect(Player).to receive(:new).once
+      game.create_player(1)
+    end
 
-      it 'adds new player to players array' do
-        expect { game.create_player(1) }.to change { game.players.length }.by(1)
-      end
+    it 'adds new player to players array' do
+      expect { game.create_player(1) }.to change { game.players.length }.by(1)
     end
   end
 
   describe '#player_input' do
     let(:valid_input) { '3' }
     let(:invalid_input) { 'A' }
+    before do
+      allow(game.board).to receive(:valid_move?)
+        .with(valid_input.to_i)
+        .and_return(true)
+      allow(game.board).to receive(:valid_move?)
+        .with(invalid_input.to_i)
+        .and_return(false)
+    end
 
     context 'when player input is valid' do
       before { allow(game).to receive(:gets).and_return(valid_input) }
@@ -69,19 +77,37 @@ describe Game do
   end
 
   describe '#game_setup' do
-    context 'when setting up the game' do
-      before do
-        allow(game).to receive(:name_prompt)
-        allow(game).to receive(:gets).and_return('Name')
-      end
-      it 'sets @current_player' do
-        game.game_setup
-        expect(game.current_player).to_not be nil
-      end
+    before do
+      allow(game).to receive(:name_prompt)
+      allow(game).to receive(:gets).and_return('Name')
+    end
+
+    it 'sets @current_player' do
+      game.game_setup
+      expect(game.current_player).to_not be nil
     end
   end
 
   describe '#player_turn' do
+    before do
+      allow(game).to receive(:player_input).and_return(3)
+      game.instance_variable_set(
+        :@current_player,
+        instance_double(Player, name: 'Name', marker: 'X')
+      )
+    end
+
+    it 'updates board' do
+      allow(game.board).to receive(:display)
+      expect(game.board).to receive(:update_board).with(2, 'X').once
+      game.player_turn
+    end
+
+    it 'displays board' do
+      allow(game.board).to receive(:update_board)
+      expect(game.board).to receive(:display).once
+      game.player_turn
+    end
   end
 
   describe '#game_loop' do
