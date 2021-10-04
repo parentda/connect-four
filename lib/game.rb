@@ -9,6 +9,7 @@ class Game
     @num_players = num_players
     @players = []
     @markers = ["\e[31m\u25CF\e[0m", "\e[33m\u25CF\e[0m"]
+    @board = Board.new(6, 7, 4)
   end
 
   def play
@@ -26,5 +27,13 @@ class Game
     name_prompt(number)
     name = gets.chomp
     @players << Player.new(name, @markers[number - 1])
+  end
+
+  def player_input
+    while (column = gets.chomp.to_i)
+      break column if @board.valid_move?(column)
+
+      invalid_selection_prompt
+    end
   end
 end
