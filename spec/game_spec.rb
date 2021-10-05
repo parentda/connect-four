@@ -136,5 +136,64 @@ describe Game do
   end
 
   describe '#game_loop' do
+    before do
+      allow(game).to receive(:player_turn)
+      allow(game).to receive(:switch_player)
+    end
+
+    context 'when board.full? is true' do
+      before { allow(game.board).to receive(:full?).and_return(true) }
+
+      it 'stops loop and does not switch players' do
+        expect(game).to_not receive(:switch_player)
+        game.game_loop
+      end
+    end
+
+    context 'when board.full? is false three times' do
+      before do
+        allow(game.board).to receive(:game_over?).and_return(false)
+        allow(game.board).to receive(:full?).and_return(
+          false,
+          false,
+          false,
+          true
+        )
+      end
+      it 'calls switch_players three times' do
+        expect(game).to receive(:switch_player).exactly(3).times
+        game.game_loop
+      end
+    end
+
+    context 'when board.game_over? is true' do
+      before do
+        allow(game.board).to receive(:full?).and_return(false)
+        allow(game.board).to receive(:game_over?).and_return(true)
+      end
+
+      it 'stops loop and does not switch players' do
+        expect(game).to_not receive(:switch_player)
+        game.game_loop
+      end
+    end
+
+    context 'when board.game_over? is false five times' do
+      before do
+        allow(game.board).to receive(:full?).and_return(false)
+        allow(game.board).to receive(:game_over?).and_return(
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        )
+      end
+      it 'calls switch_players five times' do
+        expect(game).to receive(:switch_player).exactly(5).times
+        game.game_loop
+      end
+    end
   end
 end
