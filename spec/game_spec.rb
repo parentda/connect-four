@@ -147,6 +147,7 @@ describe Game do
       it 'stops loop and does not switch players' do
         expect(game).to_not receive(:switch_player)
         game.game_loop
+        expect(game.game_over).to be false
       end
     end
 
@@ -163,6 +164,7 @@ describe Game do
       it 'calls switch_players three times' do
         expect(game).to receive(:switch_player).exactly(3).times
         game.game_loop
+        expect(game.game_over).to be false
       end
     end
 
@@ -175,6 +177,7 @@ describe Game do
       it 'stops loop and does not switch players' do
         expect(game).to_not receive(:switch_player)
         game.game_loop
+        expect(game.game_over).to be true
       end
     end
 
@@ -193,6 +196,29 @@ describe Game do
       it 'calls switch_players five times' do
         expect(game).to receive(:switch_player).exactly(5).times
         game.game_loop
+        expect(game.game_over).to be true
+      end
+    end
+  end
+
+  describe '#game_end' do
+    before do
+      allow(game).to receive(:win_prompt)
+      allow(game).to receive(:tie_prompt)
+    end
+
+    context 'when the game is won' do
+      before { game.instance_variable_set(:@game_end, true) }
+      it 'calls win_prompt' do
+        expect(game).to receive(:win_prompt).once
+        game.game_end
+      end
+    end
+
+    context 'when the game is a tie' do
+      it 'calls tie_prompt' do
+        expect(game).to receive(:tie_prompt).once
+        game.game_end
       end
     end
   end
