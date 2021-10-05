@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 require_relative 'displayable'
+require_relative 'board'
+require_relative 'player'
 class Game
   include Displayable
 
