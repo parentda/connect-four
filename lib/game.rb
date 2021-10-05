@@ -10,7 +10,7 @@ class Game
     @players = []
     @current_player = nil
     @game_over = false
-    @markers = ["\e[31m\u25CF\e[0m", "\e[33m\u25CF\e[0m"]
+    @markers = ["\e[31m\u25CF\e[0m", "\e[34m\u25CF\e[0m"]
     @board = Board.new(6, 7, 4)
   end
 
