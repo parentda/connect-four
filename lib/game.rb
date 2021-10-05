@@ -45,10 +45,19 @@ class Game
     @board.display
   end
 
-  def game_loop; end
+  def game_loop
+    until @board.full?
+      player_turn
+      break if @board.game_over?
+
+      switch_player
+    end
+  end
 
   def switch_player
     @players.rotate!
     @current_player = @players.first
   end
+
+  def game_end; end
 end
