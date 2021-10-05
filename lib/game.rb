@@ -3,12 +3,13 @@ require_relative 'displayable'
 class Game
   include Displayable
 
-  attr_reader :players, :current_player, :board
+  attr_reader :players, :current_player, :game_over, :board
 
   def initialize(num_players)
     @num_players = num_players
     @players = []
     @current_player = nil
+    @game_over = false
     @markers = ["\e[31m\u25CF\e[0m", "\e[33m\u25CF\e[0m"]
     @board = Board.new(6, 7, 4)
   end
@@ -48,7 +49,7 @@ class Game
   def game_loop
     until @board.full?
       player_turn
-      break if @board.game_over?
+      return @game_over = true if @board.game_over?
 
       switch_player
     end
@@ -59,5 +60,7 @@ class Game
     @current_player = @players.first
   end
 
-  def game_end; end
+  def game_end
+    @game_end ? win_prompt : tie_prompt
+  end
 end
