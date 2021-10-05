@@ -32,20 +32,18 @@ class Board
   end
 
   def display
-    visualize = ''
+    output = "\n\t"
     @height.times do |num|
       @positions.each do |column|
-        visualize += "|#{column[@height - 1 - num] || ' '}"
+        output += "|#{column[@height - 1 - num] || ' '}"
       end
-      visualize += "|\n\t"
+      output += "|\n\t"
     end
-    visualize += "#{"\u203E" * 15}\n\t"
-    @width.times { |num| visualize += " #{num + 1}" }
+    output += "#{"\u203E" * 15}\n\t"
+    @width.times { |num| output += " #{num + 1}" }
+    output += "\n\n"
 
-    puts <<-HEREDOC
-
-        #{visualize}
-    HEREDOC
+    puts output
   end
 
   def game_over?
