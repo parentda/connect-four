@@ -27,7 +27,10 @@ describe Game do
   describe '#player_input' do
     let(:valid_input) { '3' }
     let(:invalid_input) { 'A' }
+    let(:p1) { instance_double(Player, name: 'p1', marker: 'X') }
     before do
+      game.instance_variable_set(:@current_player, p1)
+      allow(game).to receive(:player_input_prompt)
       allow(game.board).to receive(:valid_move?)
         .with(valid_input.to_i)
         .and_return(true)
@@ -78,6 +81,9 @@ describe Game do
 
   describe '#game_setup' do
     before do
+      allow(game).to receive(:segment_break_prompt)
+      allow(game).to receive(:introduction_prompt)
+      allow(game).to receive(:game_start_prompt)
       allow(game).to receive(:name_prompt)
       allow(game).to receive(:gets).and_return('Name')
     end
@@ -99,7 +105,7 @@ describe Game do
 
     it 'updates board' do
       allow(game.board).to receive(:display)
-      expect(game.board).to receive(:update_board).with(2, 'X').once
+      expect(game.board).to receive(:update_board).with(3, 'X').once
       game.player_turn
     end
 
@@ -208,7 +214,7 @@ describe Game do
     end
 
     context 'when the game is won' do
-      before { game.instance_variable_set(:@game_end, true) }
+      before { game.instance_variable_set(:@game_over, true) }
       it 'calls win_prompt' do
         expect(game).to receive(:win_prompt).once
         game.game_end
