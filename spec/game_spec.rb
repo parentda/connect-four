@@ -110,6 +110,31 @@ describe Game do
     end
   end
 
+  describe '#switch_player' do
+    let(:p1) { instance_double(Player, name: 'p1', marker: 'X') }
+    let(:p2) { instance_double(Player, name: 'p2', marker: 'O') }
+    before do
+      game.instance_variable_set(:@players, [p1, p2])
+      game.instance_variable_set(:@current_player, p1)
+    end
+
+    context 'when current player is Player 1 and one switch occurs' do
+      it 'switches to Player 2' do
+        game.switch_player
+        expect(game.current_player.name).to eq('p2')
+        expect(game.players.last.name).to eq('p1')
+      end
+    end
+
+    context 'when current player is Player 1 and two switches occur' do
+      it 'switches back to Player 1' do
+        2.times { game.switch_player }
+        expect(game.current_player.name).to eq('p1')
+        expect(game.players.last.name).to eq('p2')
+      end
+    end
+  end
+
   describe '#game_loop' do
   end
 end
