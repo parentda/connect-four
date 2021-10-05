@@ -21,28 +21,31 @@ class Game
   end
 
   def game_setup
-    game_start_prompt
+    segment_break_prompt
+    introduction_prompt(@board)
     @num_players.times { |num| create_player(num) }
     @current_player = @players.first
+    game_start_prompt(@board, @players)
   end
 
   def create_player(number)
     name_prompt(number)
     name = gets.chomp
-    @players << Player.new(name, @markers[number - 1])
+    @players << Player.new(name, @markers[number])
   end
 
   def player_input
+    player_input_prompt(@current_player)
     while (column = gets.chomp.to_i)
       return column if @board.valid_move?(column)
 
-      invalid_selection_prompt
+      invalid_selection_prompt(@current_player)
     end
   end
 
   def player_turn
     column = player_input
-    @board.update_board(column - 1, @current_player.marker)
+    @board.update_board(column, @current_player.marker)
     @board.display
   end
 
@@ -61,6 +64,6 @@ class Game
   end
 
   def game_end
-    @game_end ? win_prompt : tie_prompt
+    @game_over ? win_prompt(@current_player) : tie_prompt
   end
 end
