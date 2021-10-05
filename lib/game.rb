@@ -46,4 +46,9 @@ class Game
   end
 
   def game_loop; end
+
+  def switch_player
+    @players.rotate!
+    @current_player = @players.first
+  end
 end
